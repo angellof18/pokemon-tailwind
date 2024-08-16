@@ -13,6 +13,7 @@
   <figure class="aspect-square w-full">
     <img
       src={`https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/${extraerPokemonId(imagen)}.png`}
+      loading="lazy"
       alt={pokemon.name}
     />
   </figure>
