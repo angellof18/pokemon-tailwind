@@ -1,4 +1,4 @@
-export async function load({ fetch }) {
+/*export async function load({ fetch }) {
   async function pokemonData() {
     const result = await fetch("https://pokeapi.co/api/v2/pokemon");
     const data = await result.json();
@@ -9,3 +9,4 @@ export async function load({ fetch }) {
     pokemons: await pokemonData(),
   };
 }
+*/

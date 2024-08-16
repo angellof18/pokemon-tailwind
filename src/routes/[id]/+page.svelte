@@ -38,12 +38,21 @@
   });
 </script>
 
+<svelte:head>
+  <title>{pokemon.name.toUpperCase()}</title>
+</svelte:head>
+
 <div class="hero bg-base-200 min-h-screen">
   <div class="hero-content text-center">
     <div class="flex flex-col">
-      <h1 class="text-5xl font-bold">
-        {pokemon.name.toUpperCase()} - No. {pokemon.id}
-      </h1>
+      <div class="flex items-center gap-3">
+        <a href="/" class="btn btn-accent btn-sm rounded-full"
+          ><i class="bi bi-arrow-left-short text-2xl"></i></a
+        >
+        <h1 class="text-5xl font-bold">
+          {pokemon.name.toUpperCase()} - No. {pokemon.id}
+        </h1>
+      </div>
       <div class="flex w-full justify-center gap-5 py-6">
         {#if sprites && sprites.sprites}
           <img src={sprites.sprites.front_default} alt={pokemon.name} />
