@@ -4,7 +4,7 @@
 
   let pokemons = "";
   let pokemonsFiltrados = [];
-  let pokemonTipos = [];
+  let pokemonsPagina = [];
   let infoTipo = [];
   let tipos = [
     "Normal",
@@ -30,17 +30,10 @@
   ];
   let searchTerm = "";
   let botonItem = "";
+  let paginaActual = 1;
+  let cantidadPorPagina = 28;
 
-  function filterPokemons(x) {
-    if (searchTerm.trim() !== "") {
-      pokemonsFiltrados = pokemons.filter((pokemon) =>
-        pokemon.name.toLowerCase().includes(x.toLowerCase())
-      );
-      return;
-    }
-    pokemonsFiltrados = [...pokemons]; // Restablece la lista original para volver a mostrar todos los pokemones.
-  }
-  $: filterPokemons(searchTerm);
+  //<!--Fetching-->
 
   async function fetchPokemons() {
     const result = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
@@ -60,6 +53,21 @@
     return data.pokemon;
   }
 
+  //<!--Functions-->
+
+  function filtrarPokemonNombre(nombre) {
+    if (searchTerm.trim() !== "") {
+      pokemonsFiltrados = pokemons.filter((pokemon) =>
+        pokemon.name.toLowerCase().includes(nombre.toLowerCase())
+      );
+    } else {
+      pokemonsFiltrados = [...pokemons];
+    }
+    paginaActual = 1;
+  }
+
+  $: filtrarPokemonNombre(searchTerm);
+
   async function seleccionarTipo(tipo) {
     botonItem = tipo;
     infoTipo = await fetchTipoEspecifico(tipo);
@@ -68,6 +76,22 @@
       nombres.includes(pokemon.name)
     );
   }
+
+  function cambiarPagina(direccion) {
+    if (
+      direccion === "next" &&
+      paginaActual * cantidadPorPagina < pokemonsFiltrados.length
+    ) {
+      paginaActual += 1;
+    } else if (direccion === "prev" && paginaActual > 1) {
+      paginaActual -= 1;
+    }
+  }
+
+  $: pokemonsPagina = pokemonsFiltrados.slice(
+    (paginaActual - 1) * cantidadPorPagina,
+    paginaActual * cantidadPorPagina
+  );
 
   onMount(async () => {
     pokemons = await fetchPokemons();
@@ -79,7 +103,7 @@
   <title>POKEDEX</title>
 </svelte:head>
 
-<section class="max-w-4xl mx-auto py-4">
+<section class="max-w-4xl mx-auto py-4 px-1 flex flex-col gap-2">
   <div class="flex items-center gap-2 sticky top-0 bg-base-100 opacity-1 z-50">
     <label
       for="busqueda"
@@ -97,6 +121,9 @@
     <button
       class="btn btn-secondary"
       on:click={() => {
+        paginaActual = 1;
+        searchTerm = "";
+        botonItem = "";
         pokemonsFiltrados = [...pokemons];
       }}><i class="bi bi-arrow-clockwise text-l" /></button
     >
@@ -111,8 +138,11 @@
       >
         {#each tipos as tipo, index}
           <li>
-            <button on:click={() => seleccionarTipo(tipo.toLowerCase())}
-              >{tipo}</button
+            <button
+              on:click={() => {
+                seleccionarTipo(tipo.toLowerCase());
+                paginaActual = 1;
+              }}>{tipo}</button
             >
           </li>
         {/each}
@@ -120,10 +150,24 @@
     </div>
   </div>
   <main class="grid md:grid-cols-4 grid-cols-2 gap-5 mt-3">
-    {#each pokemonsFiltrados as pokemon, index}
+    {#each pokemonsPagina as pokemon, index}
       {#await fetchInfoPokemon(pokemon.url) then imagen}
-        <PokemonCard {pokemon} {index} imagen={imagen.id} />
+        <PokemonCard {pokemon} imagen={imagen.id} />
       {/await}
     {/each}
   </main>
+  <div class="join justify-center">
+    <button
+      class="join-item btn"
+      on:click={() => cambiarPagina("prev")}
+      disabled={paginaActual === 1}>«</button
+    >
+    <button class="join-item btn">Pagina {paginaActual}</button>
+    <button
+      class="join-item btn"
+      on:click={() => cambiarPagina("next")}
+      disabled={paginaActual * cantidadPorPagina >= pokemonsFiltrados.length}
+      >»</button
+    >
+  </div>
 </section>

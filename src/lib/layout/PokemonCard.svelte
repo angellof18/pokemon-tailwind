@@ -1,6 +1,5 @@
 <script>
   export let pokemon;
-  export let index;
   export let imagen;
 
   function extraerPokemonId(link) {
@@ -19,7 +18,7 @@
   </figure>
   <div class="card-body">
     <h2 class="card-title">{pokemon.name.toUpperCase()}</h2>
-    <p>{`No ${extraerPokemonId((index + 1).toString())}`}</p>
+    <p>{`No ${extraerPokemonId((imagen).toString())}`}</p>
     <div class="card-actions justify-end">
       <a class="btn btn-primary" href={`/${pokemon.name}`}>Mas detalles</a>
     </div>
