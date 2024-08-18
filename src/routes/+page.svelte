@@ -32,29 +32,47 @@
   let botonItem = "";
   let paginaActual = 1;
   let cantidadPorPagina = 28;
+  let tiposCache = {};
 
   //<!--Fetching-->
 
-  async function fetchPokemons() {
+  //{name, url}
+  export async function fetchPokemons() {
     const result = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
     const data = await result.json();
-    return data["results"];
+
+    const detallesPokemon = await Promise.all(
+      data["results"].map(async (pokemon) => {
+        const pokemonInfo = await fetchInfoPokemon(pokemon.url);
+        return { ...pokemon, ...pokemonInfo };
+      })
+    );
+    return detallesPokemon;
   }
 
-  async function fetchInfoPokemon(url) {
+  //{id,name,attack,defense,image,...}
+  export async function fetchInfoPokemon(url) {
     const result = await fetch(url);
+    if (!result.ok) {
+      throw new Error(`Error: ${result.status} ${result.statusText}`);
+    }
     const data = await result.json();
     return data;
   }
 
-  async function fetchTipoEspecifico(tipo) {
-    const result = await fetch(`https://pokeapi.co/api/v2/type/${tipo}`);
-    const data = await result.json();
-    return data.pokemon;
+  export async function fetchTipoEspecifico(tipo) {
+    if (!tiposCache[tipo]) {
+      const result = await fetch(`https://pokeapi.co/api/v2/type/${tipo}`);
+      if (!result.ok) {
+        throw new Error(`Error: ${result.status} ${result.statusText}`);
+      }
+      const data = await result.json();
+      tiposCache[tipo] = data.pokemon;
+    }
+    return tiposCache[tipo];
   }
 
   //<!--Functions-->
-
   function filtrarPokemonNombre(nombre) {
     if (searchTerm.trim() !== "") {
       pokemonsFiltrados = pokemons.filter((pokemon) =>
@@ -86,6 +104,7 @@
     } else if (direccion === "prev" && paginaActual > 1) {
       paginaActual -= 1;
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   $: pokemonsPagina = pokemonsFiltrados.slice(
@@ -103,7 +122,8 @@
   <title>POKEDEX</title>
 </svelte:head>
 
-<section class="max-w-4xl mx-auto py-4 px-1 flex flex-col gap-2">
+<section class="max-w-4xl mx-auto py-4 px-1 flex flex-col gap-2 justify-center">
+  <h1 class="text-xl font-bold">POKEDEX</h1>
   <div class="flex items-center gap-2 sticky top-0 bg-base-100 opacity-1 z-50">
     <label
       for="busqueda"
@@ -134,7 +154,7 @@
       <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
       <ul
         tabindex="0"
-        class="dropdown-content menu bg-base-300 rounded-box z-[1] w-52 p-2 shadow"
+        class="dropdown-content menu bg-neutral rounded-box z-[1] w-52 p-2 shadow"
       >
         {#each tipos as tipo, index}
           <li>
@@ -150,10 +170,8 @@
     </div>
   </div>
   <main class="grid md:grid-cols-4 grid-cols-2 gap-5 mt-3">
-    {#each pokemonsPagina as pokemon, index}
-      {#await fetchInfoPokemon(pokemon.url) then imagen}
-        <PokemonCard {pokemon} imagen={imagen.id} />
-      {/await}
+    {#each pokemonsPagina as pokemon}
+      <PokemonCard {pokemon} />
     {/each}
   </main>
   <div class="join justify-center">

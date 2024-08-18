@@ -3,7 +3,7 @@ export default {
   content: ["./src/**/*.{html,js,svelte,ts}"],
 
   daisyui: {
-    themes: ["synthwave", "aqua", "night", "emerald", "forest"],
+    themes: ["aqua", "synthwave"],
   },
 
   plugins: [require("@tailwindcss/typography"), require("daisyui")],

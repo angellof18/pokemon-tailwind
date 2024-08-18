@@ -1,100 +1,92 @@
 <script>
   import { onMount } from "svelte";
+  import { page } from "$app/stores";
 
-  export let data;
-  const { pokemon } = data;
+  let pokemon = [];
 
-  let locations = [];
-  let especie = [];
-  let sprites = [];
+  async function pokemonInfo(id) {
+    const resultData = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+    const data = await resultData.json();
 
-  async function fetchLocations() {
-    const result = await fetch(pokemon.location_area_encounters);
-    const data = await result.json();
-    return data;
+    const resultUbicacion = await fetch(data.location_area_encounters);
+    const ubicacion = await resultUbicacion.json();
+
+    return {
+      ...data,
+      ubicaciones: ubicacion,
+    };
   }
 
-  async function fetchEspecie() {
-    const result = await fetch(pokemon.species.url);
-    const data = await result.json();
-    return data;
-  }
-
-  async function fetchSprites() {
-    const result = await fetch(pokemon.forms[0].url);
-    const data = await result.json();
-    return data;
-  }
-
-  function splitLocations(x) {
+  function split(x) {
     const locationParts = x.replace(/-/g, " ");
     return locationParts;
   }
 
   onMount(async () => {
-    sprites = await fetchSprites();
-    locations = await fetchLocations();
-    especie = await fetchEspecie();
+    const id = $page.params.id;
+    pokemon = await pokemonInfo(id);
+    console.log(pokemon.ubicaciones);
   });
 </script>
 
 <svelte:head>
-  <title>{pokemon.name.toUpperCase()}</title>
+  <title>{pokemon?.name ? pokemon.name.toUpperCase() : "Loading..."}</title>
 </svelte:head>
 
 <div class="hero bg-base-200 min-h-screen">
   <div class="hero-content text-center">
     <div class="flex flex-col">
       <div class="flex items-center gap-3">
-        <a href="/" class="btn btn-accent btn-sm rounded-full"
-          ><i class="bi bi-arrow-left-short text-2xl"></i></a
+        <a href="/" class="btn btn-accent m-1"
+          ><i class="bi bi-arrow-left text-l"></i></a
         >
-        <h1 class="text-5xl font-bold">
-          {pokemon.name.toUpperCase()} - No. {pokemon.id}
+        <h1 class="text-2xl md:text-5xl font-bold">
+          {pokemon?.name
+            ? `${pokemon.name.toUpperCase()} - No. ${pokemon.id}`
+            : "Loading..."}
         </h1>
       </div>
       <div class="flex w-full justify-center gap-5 py-6">
-        {#if sprites && sprites.sprites}
-          <img src={sprites.sprites.front_default} alt={pokemon.name} />
-          <img src={sprites.sprites.back_default} alt={pokemon.name} />
+        {#if pokemon.sprites}
+          <img
+            src={pokemon.sprites.front_default}
+            alt={pokemon.name}
+            width="128"
+          />
+          <img
+            src={pokemon.sprites.back_default}
+            alt={pokemon.name}
+            width="128"
+          />
         {/if}
       </div>
-      <div class="stats stats-vertical lg:stats-horizontal shadow">
-        <div class="stat">
-          <div class="stat-title text-xl">Grupo</div>
-          <div class="stat-desc">
-            {#if especie.egg_groups}
-              <ul>
-                {#each especie.egg_groups as egg}
-                  <li>{egg.name}</li>
-                {/each}
-              </ul>
-            {/if}
-          </div>
-        </div>
 
-        <div class="stat">
-          <div class="stat-title text-xl">Abilities</div>
-          <div class="stat-desc">
-            {#if pokemon.abilities}
-              <ul>
-                {#each pokemon.abilities as hability}
-                  <li>{hability.ability.name}</li>
-                {/each}
-              </ul>
-            {/if}
-          </div>
+      {#if pokemon.types}
+        <div class="flex gap-2 w-full justify-center items-center">
+          {#each pokemon.types as type}
+            <div class="badge badge-primary badge-lg capitalize">
+              {type.type.name}
+            </div>
+          {/each}
         </div>
+      {/if}
 
-        <div class="stat">
-          <div class="stat-title text-xl">Color</div>
-          <div class="stat-desc">
-            {#if especie.color}
-              <p>{especie.color.name}</p>
-            {/if}
-          </div>
+      {#if pokemon.stats}
+        <div class="stats stats-vertical lg:stats-horizontal shadow mt-5">
+          {#each pokemon.stats as stat}
+            <div class="stat">
+              <div class="stat-title text-xl capitalize">
+                {split(stat.stat.name)}
+              </div>
+              <div class="stat-desc">
+                <ul>
+                  <li>{stat.base_stat}</li>
+                </ul>
+              </div>
+            </div>
+          {/each}
         </div>
-      </div>
+      {/if}
 
       <!--lsacbalsck-->
       <div class="stats stats-vertical lg:stats-horizontal shadow mt-4">
@@ -106,20 +98,6 @@
         </div>
 
         <div class="stat">
-          <div class="stat-title text-xl">Felicidad base</div>
-          <div class="stat-desc">
-            <p>{especie.base_happiness}</p>
-          </div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-title text-xl">Ratio de captura</div>
-          <div class="stat-desc">
-            <p>{especie.capture_rate}</p>
-          </div>
-        </div>
-
-        <div class="stat">
           <div class="stat-title text-xl">Peso</div>
           <div class="stat-desc">
             <p>{pokemon.height}</p>
@@ -127,7 +105,7 @@
         </div>
       </div>
 
-      {#if locations.length > 0}
+      {#if pokemon.ubicaciones}
         <div class="mt-5 w-full h-96 overflow-x-auto">
           <table class="table table-pin-rows">
             <thead>
@@ -136,8 +114,8 @@
               </tr>
             </thead>
             <tbody>
-              {#each locations as location}
-                <tr><td>{splitLocations(location.location_area.name)}</td></tr>
+              {#each pokemon.ubicaciones as location}
+                <tr><td>{split(location.location_area.name)}</td></tr>
               {/each}
             </tbody>
           </table>
