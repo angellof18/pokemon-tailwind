@@ -37,7 +37,7 @@
   <div class="hero-content text-center">
     <div class="flex flex-col">
       <div class="flex items-center gap-3">
-        <a href="/" class="btn btn-accent m-1"
+        <a href="/" class="btn btn-secondary m-1"
           ><i class="bi bi-arrow-left text-l"></i></a
         >
         <h1 class="text-2xl md:text-5xl font-bold">
@@ -73,18 +73,36 @@
 
       {#if pokemon.stats}
         <div class="stats stats-vertical lg:stats-horizontal shadow mt-5">
-          {#each pokemon.stats as stat}
             <div class="stat">
-              <div class="stat-title text-xl capitalize">
-                {split(stat.stat.name)}
-              </div>
-              <div class="stat-desc">
-                <ul>
-                  <li>{stat.base_stat}</li>
-                </ul>
-              </div>
+              <div class="stat-title text-xl capitalize">Hp</div>
+              <div class="stat-desc">{pokemon.stats[0].base_stat}</div>
             </div>
-          {/each}
+            <div class="stat">
+              <div class="stat-title text-xl capitalize">Attack</div>
+              <div class="stat-desc">{pokemon.stats[1].base_stat}</div>
+            </div>
+            <div class="stat">
+              <div class="stat-title text-xl capitalize">Defense</div>
+              <div class="stat-desc">{pokemon.stats[2].base_stat}</div>
+            </div>
+            
+        </div>
+      {/if}
+      {#if pokemon.stats}
+        <div class="stats stats-vertical lg:stats-horizontal shadow mt-5">
+            <div class="stat">
+              <div class="stat-title text-xl capitalize">Special attack</div>
+              <div class="stat-desc">{pokemon.stats[3].base_stat}</div>
+            </div>
+            <div class="stat">
+              <div class="stat-title text-xl capitalize">Special defense</div>
+              <div class="stat-desc">{pokemon.stats[4].base_stat}</div>
+            </div>
+            <div class="stat">
+              <div class="stat-title text-xl capitalize">Speed</div>
+              <div class="stat-desc">{pokemon.stats[5].base_stat}</div>
+            </div>
+            
         </div>
       {/if}
 

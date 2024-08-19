@@ -123,7 +123,10 @@
 </svelte:head>
 
 <section class="max-w-4xl mx-auto py-4 px-1 flex flex-col gap-2 justify-center">
-  <h1 class="text-xl font-bold">POKEDEX</h1>
+  <h1 class="text-4xl font-bold flex gap-3 items-center">
+    <img src="pokemon.webp" alt="pokemon" width="64" />
+    POKEDEX
+  </h1>
   <div class="flex items-center gap-2 sticky top-0 bg-base-100 opacity-1 z-50">
     <label
       for="busqueda"
@@ -147,33 +150,40 @@
         pokemonsFiltrados = [...pokemons];
       }}><i class="bi bi-arrow-clockwise text-l" /></button
     >
-    <div class="dropdown dropdown-end">
-      <div tabindex="0" role="button" class="btn btn-accent m-1">
+
+    <div class="dropdown dropdown-bottom dropdown-end">
+      <div tabindex="0" role="button" class="btn btn-primary m-1">
         <i class="bi bi-funnel-fill text-l" />
       </div>
       <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-      <ul
+      <div
         tabindex="0"
-        class="dropdown-content menu bg-neutral rounded-box z-[1] w-52 p-2 shadow"
+        class="dropdown-content card card-compact bg-neutral text-primary-content z-[1] w-96 px-2 py-2 shadow"
       >
-        {#each tipos as tipo, index}
-          <li>
+        <div class="card-body grid md:grid-cols-4 grid-cols-2 gap-5">
+          {#each tipos as tipo}
             <button
               on:click={() => {
                 seleccionarTipo(tipo.toLowerCase());
                 paginaActual = 1;
               }}>{tipo}</button
             >
-          </li>
-        {/each}
-      </ul>
+          {/each}
+        </div>
+      </div>
     </div>
   </div>
-  <main class="grid md:grid-cols-4 grid-cols-2 gap-5 mt-3">
-    {#each pokemonsPagina as pokemon}
-      <PokemonCard {pokemon} />
-    {/each}
-  </main>
+  {#if pokemons}
+    <main class="grid md:grid-cols-4 grid-cols-2 gap-5 mt-3">
+      {#each pokemonsPagina as pokemon}
+        <PokemonCard {pokemon} />
+      {/each}
+    </main>
+  {:else}
+    <div class="flex justify-center items-center h-96">
+      <span class="loading loading-infinity loading-lg"></span>
+    </div>
+  {/if}
   <div class="join justify-center">
     <button
       class="join-item btn"
