@@ -11,9 +11,17 @@
     const resultUbicacion = await fetch(data.location_area_encounters);
     const ubicacion = await resultUbicacion.json();
 
+    const resultDescription = await fetch(
+      `https://pokeapi.co/api/v2/pokemon-species/${id}`
+    );
+    const description = await resultDescription.json();
+
     return {
       ...data,
       ubicaciones: ubicacion,
+      descripcion: description.flavor_text_entries
+        .find((entry) => entry.language.name === "es")
+        .flavor_text.replace(/(\r\n|\n|\r|\f)/gm, " "),
     };
   }
 
@@ -25,7 +33,7 @@
   onMount(async () => {
     const id = $page.params.id;
     pokemon = await pokemonInfo(id);
-    console.log(pokemon.ubicaciones);
+    console.log(pokemon);
   });
 </script>
 
@@ -35,28 +43,27 @@
 
 <div class="hero bg-base-200 min-h-screen">
   <div class="hero-content text-center">
-    <div class="flex flex-col">
+    <div class="flex flex-col gap-5">
       <div class="flex items-center gap-3">
         <a href="/" class="btn btn-secondary m-1"
           ><i class="bi bi-arrow-left text-l"></i></a
         >
-        <h1 class="text-2xl md:text-5xl font-bold">
-          {pokemon?.name
-            ? `${pokemon.name.toUpperCase()} - No. ${pokemon.id}`
-            : "Loading..."}
-        </h1>
+        {#if pokemon.name}
+          <h1 class="text-2xl md:text-5xl font-bold capitalize">
+            {pokemon.name} - No. {pokemon.id}
+          </h1>
+        {:else}
+          <div class="flex justify-center items-center w-full">
+            <span class="loading loading-ring loading-lg"></span>
+          </div>
+        {/if}
       </div>
       <div class="flex w-full justify-center gap-5 py-6">
         {#if pokemon.sprites}
           <img
-            src={pokemon.sprites.front_default}
+            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`}
             alt={pokemon.name}
-            width="128"
-          />
-          <img
-            src={pokemon.sprites.back_default}
-            alt={pokemon.name}
-            width="128"
+            width="96"
           />
         {/if}
       </div>
@@ -71,38 +78,55 @@
         </div>
       {/if}
 
+      <p class="max-w-md">{pokemon.descripcion}</p>
       {#if pokemon.stats}
-        <div class="stats stats-vertical lg:stats-horizontal shadow mt-5">
-            <div class="stat">
-              <div class="stat-title text-xl capitalize">Hp</div>
-              <div class="stat-desc">{pokemon.stats[0].base_stat}</div>
-            </div>
-            <div class="stat">
-              <div class="stat-title text-xl capitalize">Attack</div>
-              <div class="stat-desc">{pokemon.stats[1].base_stat}</div>
-            </div>
-            <div class="stat">
-              <div class="stat-title text-xl capitalize">Defense</div>
-              <div class="stat-desc">{pokemon.stats[2].base_stat}</div>
-            </div>
-            
+        <div class="tooltip" data-tip={pokemon.stats[0].base_stat}>
+          <strong class="w-24">HP</strong>
+          <progress
+            class="progress w-56"
+            value={pokemon.stats[0].base_stat}
+            max="255"
+          ></progress>
         </div>
-      {/if}
-      {#if pokemon.stats}
-        <div class="stats stats-vertical lg:stats-horizontal shadow mt-5">
-            <div class="stat">
-              <div class="stat-title text-xl capitalize">Special attack</div>
-              <div class="stat-desc">{pokemon.stats[3].base_stat}</div>
-            </div>
-            <div class="stat">
-              <div class="stat-title text-xl capitalize">Special defense</div>
-              <div class="stat-desc">{pokemon.stats[4].base_stat}</div>
-            </div>
-            <div class="stat">
-              <div class="stat-title text-xl capitalize">Speed</div>
-              <div class="stat-desc">{pokemon.stats[5].base_stat}</div>
-            </div>
-            
+        <div class="tooltip" data-tip={pokemon.stats[1].base_stat}>
+          <strong class="w-24">Attack</strong>
+          <progress
+            class="progress w-56"
+            value={pokemon.stats[1].base_stat}
+            max="255"
+          ></progress>
+        </div>
+        <div class="tooltip" data-tip={pokemon.stats[2].base_stat}>
+          <strong class="w-24">Defense</strong>
+          <progress
+            class="progress w-56"
+            value={pokemon.stats[2].base_stat}
+            max="255"
+          ></progress>
+        </div>
+        <div class="tooltip" data-tip={pokemon.stats[3].base_stat}>
+          <strong class="w-24">Special attack</strong>
+          <progress
+            class="progress w-56"
+            value={pokemon.stats[3].base_stat}
+            max="255"
+          ></progress>
+        </div>
+        <div class="tooltip" data-tip={pokemon.stats[4].base_stat}>
+          <strong class="w-24">Special defense</strong>
+          <progress
+            class="progress w-56"
+            value={pokemon.stats[4].base_stat}
+            max="255"
+          ></progress>
+        </div>
+        <div class="tooltip" data-tip={pokemon.stats[5].base_stat}>
+          <strong class="w-24">Speed</strong>
+          <progress
+            class="progress w-56"
+            value={pokemon.stats[5].base_stat}
+            max="255"
+          ></progress>
         </div>
       {/if}
 

@@ -181,7 +181,7 @@
     </main>
   {:else}
     <div class="flex justify-center items-center h-96">
-      <span class="loading loading-infinity loading-lg"></span>
+      <span class="loading loading-ring loading-lg"></span>
     </div>
   {/if}
   <div class="join justify-center">
