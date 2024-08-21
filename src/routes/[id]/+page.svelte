@@ -71,8 +71,12 @@
       {#if pokemon.types}
         <div class="flex gap-2 w-full justify-center items-center">
           {#each pokemon.types as type}
-            <div class="badge badge-primary badge-lg capitalize">
-              {type.type.name}
+            <div class="tooltip capitalize" data-tip={type.type.name}>
+              <img
+                src={`https://pokedex.gabrielrapucci.com.br/images/types/${type.type.name}.svg`}
+                alt={type.type.name}
+                width="32"
+              />
             </div>
           {/each}
         </div>
@@ -129,23 +133,6 @@
           ></progress>
         </div>
       {/if}
-
-      <!--lsacbalsck-->
-      <div class="stats stats-vertical lg:stats-horizontal shadow mt-4">
-        <div class="stat">
-          <div class="stat-title text-xl">Experiencia base</div>
-          <div class="stat-desc">
-            <p>{pokemon.base_experience}</p>
-          </div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-title text-xl">Peso</div>
-          <div class="stat-desc">
-            <p>{pokemon.height}</p>
-          </div>
-        </div>
-      </div>
 
       {#if pokemon.ubicaciones}
         <div class="mt-5 w-full h-96 overflow-x-auto">
