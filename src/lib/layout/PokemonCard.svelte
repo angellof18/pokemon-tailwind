@@ -15,6 +15,7 @@
     <img
       src={`https://img.pokemondb.net/sprites/home/normal/${pokemon.name}.png`}
       loading="lazy"
+      width="150"
       alt={pokemon.name}
     />
   </figure>
@@ -22,13 +23,11 @@
     {#if pokemon.types}
       <div class="flex gap-2 w-full justify-center items-center">
         {#each pokemon.types as type}
-          <div class="tooltip capitalize" data-tip={type.type.name}>
-            <img
-              src={`https://pokedex.gabrielrapucci.com.br/images/types/${type.type.name}.svg`}
-              alt={type.type.name}
-              width="32"
-            />
-          </div>
+          <img
+            src={`https://pokedex.gabrielrapucci.com.br/images/types/${type.type.name}.svg`}
+            alt={type.type.name}
+            width="32"
+          />
         {/each}
       </div>
     {/if}

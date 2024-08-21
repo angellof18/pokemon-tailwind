@@ -151,13 +151,12 @@
       }}><i class="bi bi-arrow-clockwise text-l" /></button
     >
 
-    <div class="dropdown dropdown-bottom dropdown-end">
-      <div tabindex="0" role="button" class="btn btn-primary m-1">
+    <details class="dropdown dropdown-bottom dropdown-end">
+      <summary class="btn btn-primary m-1">
         <i class="bi bi-funnel-fill text-l" />
-      </div>
+      </summary>
       <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
       <div
-        tabindex="0"
         class="dropdown-content card card-compact bg-neutral text-primary-content z-[1] w-96 px-2 py-2 shadow"
       >
         <div class="card-body grid md:grid-cols-4 grid-cols-2 gap-5">
@@ -171,7 +170,7 @@
           {/each}
         </div>
       </div>
-    </div>
+    </details>
   </div>
   {#if pokemons}
     <main class="grid md:grid-cols-4 grid-cols-2 gap-5 mt-3">
