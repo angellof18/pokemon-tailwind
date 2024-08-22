@@ -52,7 +52,7 @@
           <progress
             class="progress w-56"
             value={pokemon.stats[0].base_stat}
-            max="100"
+            max="150"
           ></progress>
         </div>
         <div class="tooltip" data-tip={pokemon.stats[1].base_stat}>
@@ -60,7 +60,7 @@
           <progress
             class="progress w-56"
             value={pokemon.stats[1].base_stat}
-            max="100"
+            max="150"
           ></progress>
         </div>
         <div class="tooltip" data-tip={pokemon.stats[2].base_stat}>
@@ -68,7 +68,7 @@
           <progress
             class="progress w-56"
             value={pokemon.stats[2].base_stat}
-            max="100"
+            max="150"
           ></progress>
         </div>
         <div class="tooltip" data-tip={pokemon.stats[5].base_stat}>
@@ -76,7 +76,7 @@
           <progress
             class="progress w-56"
             value={pokemon.stats[5].base_stat}
-            max="100"
+            max="150"
           ></progress>
         </div>
         <div class="tooltip" data-tip={pokemon.stats[3].base_stat}>
@@ -84,7 +84,7 @@
           <progress
             class="progress w-56"
             value={pokemon.stats[3].base_stat}
-            max="100"
+            max="150"
           ></progress>
         </div>
         <div class="tooltip" data-tip={pokemon.stats[4].base_stat}>
@@ -92,7 +92,7 @@
           <progress
             class="progress w-56"
             value={pokemon.stats[4].base_stat}
-            max="100"
+            max="150"
           ></progress>
         </div>
       {/if}
