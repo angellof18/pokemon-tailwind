@@ -1,4 +1,6 @@
 <script>
+  import PokemonDialog from "../components/PokemonDialog.svelte";
+
   export let pokemon;
 
   function extraerPokemonId(link) {
@@ -7,15 +9,14 @@
   }
 </script>
 
-<a
-  class="card w-auto shadow-md px-2 py-2 transition-all duration-300 hover:scale-[1.05]"
-  href={`/${pokemon.name}`}
+<label
+  class="card w-auto border border-gray-500 px-2 py-2 transition-all duration-300 hover:scale-[1.05]"
+  for={`"my_modal_${pokemon.id}"`}
 >
   <figure class="aspect-square w-full">
     <img
-      src={`https://img.pokemondb.net/sprites/home/normal/${pokemon.name}.png`}
+      src={`https://img.pokemondb.net/sprites/brilliant-diamond-shining-pearl/normal/${pokemon.name}.png`}
       loading="lazy"
-      width="150"
       alt={pokemon.name}
     />
   </figure>
@@ -23,11 +24,13 @@
     {#if pokemon.types}
       <div class="flex gap-2 w-full justify-center items-center">
         {#each pokemon.types as type}
-          <img
-            src={`https://pokedex.gabrielrapucci.com.br/images/types/${type.type.name}.svg`}
-            alt={type.type.name}
-            width="32"
-          />
+          <div class="tooltip" data-tip={type.type.name}>
+            <img
+              src={`https://pokedex.gabrielrapucci.com.br/images/types/${type.type.name}.svg`}
+              alt={type.type.name}
+              width="32"
+            />
+          </div>
         {/each}
       </div>
     {/if}
@@ -38,4 +41,5 @@
       </p>
     </div>
   </div>
-</a>
+</label>
+<PokemonDialog {pokemon} />
