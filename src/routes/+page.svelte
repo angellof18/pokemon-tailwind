@@ -130,7 +130,7 @@
     </h1>
     <label class="swap swap-rotate">
       <!-- this hidden checkbox controls the state -->
-      <input type="checkbox" class="theme-controller" value="nord" />
+      <input type="checkbox" class="theme-controller" value="night" />
 
       <!-- sun icon -->
       <svg
